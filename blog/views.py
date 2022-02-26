@@ -52,11 +52,11 @@ def index(request):
 
 def post_detail(request, slug):
     try:
-        post = Post.objects.get(slug=slug)
+        post = Post.objects.select_related('author').get(slug=slug)
     except Post.DoesNotExist:
         raise Http404('Post does not exist')
 
-    comments = Comment.objects.filter(post=post).prefetch_related('author')
+    comments = Comment.objects.filter(post=post).select_related('author')
     serialized_comments = []
     for comment in comments:
         serialized_comments.append({
